@@ -6,7 +6,7 @@ to improve connection stability and because I found it easiear to carry around.
 ## Features
 - Wired/wireless
 - Hotswap choc v1
-- ProMicro footprint (desinged with ninenano v2 in mind)
+- ProMicro footprint (designed with ninenano v2 in mind)
 - Oled screen (optional)
 - Power Switch (Wireless)
 
