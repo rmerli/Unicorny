@@ -1,0 +1,326 @@
+units:
+  kx: cx
+  ky: cy
+
+  px: kx + 2
+  py: ky + 2
+
+points:
+  zones:
+    matrix:
+      anchor:
+        shift: [100, -100]
+      key: 
+        padding: 1ky
+        spread: 1kx
+      columns:
+        shifty:
+          key:
+            column_net: P5
+          rows: 
+            top:
+               skip: true
+        pinky:
+          key:
+            column_net: P19
+            stagger: 0.20ky
+        ring:
+          key:
+            stagger: 0.66ky
+            column_net: P20
+        middle:
+          key:
+            stagger: 0.30ky
+            column_net: P21
+        index:
+          key:
+            stagger: -0.25ky
+            column_net: P0
+        inner:
+          key:
+            stagger: -0.18ky
+            column_net: P1
+      rows:
+        bottom:
+          padding: ky
+          row_net: P14
+          mirror.row_net: P8
+        home:
+          padding: ky
+          row_net: P15
+          mirror.row_net: P7
+        top:
+          padding: ky
+          row_net: P18
+          mirror.row_net: P6
+    thumb:
+      anchor:
+        ref: matrix_index_bottom
+        shift: [0U, -1.1U]
+        rotate: -8
+      columns:
+        tucky:
+          key:
+            name: thumb_tucky
+            column_net: P0    
+        middy:
+          key:
+            spread: U
+            splay: -8
+            origin: [-0.5U, -0.5U]
+            name: thumb_middy
+            column_net: P0
+        reachy:
+          key:
+            spread: U
+            splay: -12
+            origin: [-0.5U, -0.5U]
+            name: thumb_reachy
+            column_net: P1
+      rows:
+        fan:
+          row_net: P16
+  rotate: -15
+  mirror: &mirror
+    ref: thumb_reachy
+    distance: 2.35kx
+outlines:
+
+  raw:
+    - what: rectangle
+      where: true
+      size: [px+2, py+2]
+
+  keys:
+    - what: rectangle
+      where: true
+      size: [kx-0.5,ky-0.5]
+
+  circle_left_cut:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: matrix_ring_bottom
+          shift: [-0.7px,0py]
+        - ref: matrix_ring_bottom
+          shift: [-0.7px,-2py]
+        - ref: matrix_ring_bottom
+          shift: [-2px,-2py]
+        - ref: matrix_ring_bottom
+          shift: [-2px,-0py] 
+
+  circle_right_cut:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: mirror_matrix_ring_bottom
+          shift: [-0.7px,0py]
+        - ref: mirror_matrix_ring_bottom
+          shift: [-0.7px,-2py]
+        - ref: mirror_matrix_ring_bottom
+          shift: [-2px,-2py]
+        - ref: mirror_matrix_ring_bottom
+          shift: [-2px,-0py] 
+
+  circle_left_main:
+    - what: circle
+      operation: stack
+      where: 
+        - ref: matrix_middle_bottom
+          shift: [ -1.4px,-6.2py]
+      radius: 4.79py
+  circle_left_sub:
+    - what: circle
+      operation: stack
+      where: 
+        - ref: matrix_middle_bottom
+          shift: [ 5.26,-7py]
+      radius: 5.2py
+  circle_left_to_cut:
+    - name: circle_left_main
+    - operation: 
+      name: circle_left_sub
+
+  circle_left:
+    - name: circle_left_to_cut
+    - operation: subtract
+      name: circle_left_cut
+
+  circle_right_main:
+    - what: circle
+      operation: stack
+      where: 
+        - ref: mirror_matrix_middle_bottom
+          shift: [ -1.35px,-6.2py]
+      radius: 4.76py
+  circle_right_sub:
+    - what: circle
+      operation: stack
+      where: 
+        - ref: mirror_matrix_middle_bottom
+          shift: [ 5.26,-7py]
+      radius: 5.2py
+  circle_right_to_cut:
+    - name: circle_right_main
+    - operation: 
+      name: circle_right_sub
+
+  circle_right:
+    - name: circle_right_to_cut
+    - operation: subtract
+      name: circle_right_cut
+
+
+  circle_complete:
+    - name: circle_left
+    - operation: 
+      name: circle_right
+
+  curve_left:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: matrix_pinky_bottom
+          shift: [-0.4px,0.5py]
+        - ref: thumb_tucky
+          shift: [-0.4px,0.8py]
+        - ref: thumb_tucky
+          shift: [-0.4px,-0.55py]
+        - ref: matrix_pinky_bottom
+          shift: [-0.4px,-0.4py] 
+  curve_right:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: mirror_matrix_pinky_bottom
+          shift: [-0.4px,0.5py]
+        - ref: mirror_thumb_tucky
+          shift: [-0.4px,0.8py]
+        - ref: mirror_thumb_tucky
+          shift: [-0.4px,-0.55py]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [-0.4px,-0.4py] 
+  curve:
+    - name: curve_left
+    - operation: 
+      name: curve_right    
+  board:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: matrix_inner_top
+          shift: [-0.4px,0.6py]
+        - ref: matrix_inner_top
+          shift: [0.6px,0.6py]
+        - ref: mirror_matrix_inner_top
+          shift: [0.6px,0.6py]
+        - ref: mirror_matrix_inner_top
+          shift: [-0.4px,0.6py]
+        - ref: mirror_matrix_inner_top
+          shift: [-2px,-2py]
+        - ref: mirror_thumb_tucky
+          shift: [2px,-0py]
+        - ref: thumb_tucky
+          shift: [2px,-0py]
+        - ref: matrix_inner_top
+          shift: [-2px,-2py]
+
+  step1:
+    - name: raw
+    - operation:
+      name: curve
+  cut_circle:
+    - name: step1
+    - operation: subtract
+      name: circle_complete
+  step2:
+    - name: cut_circle
+    - operation: 
+      name: board
+      fillet: 1
+  combo:
+    - name: step2
+    - operation: subtract
+      name: keys
+        
+
+pcbs:
+  oled_unicorny:
+    outlines:
+       main:
+        outline: step2
+    footprints:
+      choc_hotswap:
+        what: choc
+        where: true
+        params:
+          keycaps: true
+          reverse: false
+          hotswap: true
+          from: "{{column_net}}"
+          to: "{{colrow}}"
+      diode:
+        what: diode
+        where: true
+        params:
+          from: "{{colrow}}"
+          to: "{{row_net}}"
+        adjust:
+          shift: [0, -5]
+      slider_back:
+        what: slider
+        where:
+          ref.aggregate.parts: [thumb_reachy, mirror_thumb_reachy]
+          shift: [0,8.5]
+          rotate: 180 
+        params:
+          side: B
+          from: RAW
+          to: B+
+      pad_vcc:
+        what: pad
+        where:
+          ref.aggregate.parts: [thumb_reachy, mirror_thumb_reachy]
+          shift: [-6.5,14]
+          rotate: 0
+        params:
+          width: 2
+          height: 2
+          net: B+
+          text: B+
+          front: false
+      pad_gnd:
+        what: pad
+        where:
+          ref.aggregate.parts: [thumb_reachy, mirror_thumb_reachy]
+          shift: [6.5,14]
+          rotate: 0
+        params:
+          width: 2
+          height: 2
+          net: GND
+          text: GND
+          front: false
+          align: right
+      oled:
+        what: oled
+        params:
+          side: "F"
+          SDA: P2
+          SCL: P3
+        where:
+          ref.aggregate.parts: [matrix_inner_bottom, mirror_matrix_inner_bottom]
+          shift: [-6,-13]
+          rotate: 90       
+      promicro:
+        what: promicro
+        params:
+          orientation: "down"
+        where:
+          ref.aggregate.parts: [matrix_inner_home, mirror_matrix_inner_home]
+          shift: [0,-10]
+          rotate: -90
+      holeTopInnerLeft:
+        what: mountinghole
+        where:
+          ref.aggregate.parts: [matrix_inner_top, mirror_matrix_inner_top]
