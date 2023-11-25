@@ -62,7 +62,7 @@ points:
         tucky:
           key:
             name: thumb_tucky
-            column_net: P0    
+            column_net: P21    
         middy:
           key:
             spread: U
@@ -80,6 +80,7 @@ points:
       rows:
         fan:
           row_net: P16
+          mirror.row_net: P9
   rotate: -15
   mirror: &mirror
     ref: thumb_reachy
@@ -96,39 +97,45 @@ outlines:
       where: true
       size: [kx-0.5,ky-0.5]
 
-  circle_left_cut:
-    - what: polygon
-      operation: stack
-      points:
-        - ref: matrix_ring_bottom
-          shift: [-0.7px,0py]
-        - ref: matrix_ring_bottom
-          shift: [-0.7px,-2py]
-        - ref: matrix_ring_bottom
-          shift: [-2px,-2py]
-        - ref: matrix_ring_bottom
-          shift: [-2px,-0py] 
 
-  circle_right_cut:
+
+  pinky_add_left:
     - what: polygon
       operation: stack
       points:
-        - ref: mirror_matrix_ring_bottom
-          shift: [-0.7px,0py]
-        - ref: mirror_matrix_ring_bottom
-          shift: [-0.7px,-2py]
-        - ref: mirror_matrix_ring_bottom
-          shift: [-2px,-2py]
-        - ref: mirror_matrix_ring_bottom
-          shift: [-2px,-0py] 
+        - ref: matrix_middle_bottom
+          shift: [0px,-1.5ky]
+        - ref: matrix_middle_bottom
+          shift: [0.5px,-2ky]
+        - ref: matrix_pinky_bottom
+          shift: [-0.5kx  ,-0.5ky - 0.2ky -2]
+        - ref: matrix_pinky_bottom
+          shift: [-0.5kx ,-0.5ky] 
+  pinky_add_right:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: mirror_matrix_middle_bottom
+          shift: [0px,-1.5ky]
+        - ref: mirror_matrix_middle_bottom
+          shift: [0.5px,-2ky]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [-0.5kx  ,-0.5ky - 0.2ky -2]
+        - ref: mirror_matrix_pinky_bottom
+          shift: [-0.5kx ,-0.5ky]
+
+  pinky_add:
+    - name: pinky_add_left
+    - operation: 
+      name: pinky_add_right
 
   circle_left_main:
     - what: circle
       operation: stack
       where: 
         - ref: matrix_middle_bottom
-          shift: [ -1.4px,-6.2py]
-      radius: 4.79py
+          shift: [ -1.32px,-6.7py]
+      radius: 5.21py
   circle_left_sub:
     - what: circle
       operation: stack
@@ -136,23 +143,20 @@ outlines:
         - ref: matrix_middle_bottom
           shift: [ 5.26,-7py]
       radius: 5.2py
-  circle_left_to_cut:
+  circle_left:
     - name: circle_left_main
     - operation: 
       name: circle_left_sub
 
-  circle_left:
-    - name: circle_left_to_cut
-    - operation: subtract
-      name: circle_left_cut
+
 
   circle_right_main:
     - what: circle
       operation: stack
       where: 
         - ref: mirror_matrix_middle_bottom
-          shift: [ -1.35px,-6.2py]
-      radius: 4.76py
+          shift: [ -1.32px,-6.7py]
+      radius: 5.21py
   circle_right_sub:
     - what: circle
       operation: stack
@@ -160,15 +164,11 @@ outlines:
         - ref: mirror_matrix_middle_bottom
           shift: [ 5.26,-7py]
       radius: 5.2py
-  circle_right_to_cut:
+  circle_right:
     - name: circle_right_main
     - operation: 
       name: circle_right_sub
 
-  circle_right:
-    - name: circle_right_to_cut
-    - operation: subtract
-      name: circle_right_cut
 
 
   circle_complete:
@@ -225,10 +225,14 @@ outlines:
         - ref: matrix_inner_top
           shift: [-2px,-2py]
 
-  step1:
+  step0:
     - name: raw
     - operation:
       name: curve
+  step1:
+    - name: step0
+    - operation:
+      name: pinky_add
   cut_circle:
     - name: step1
     - operation: subtract
@@ -238,10 +242,13 @@ outlines:
     - operation: 
       name: board
       fillet: 1
+
   combo:
     - name: step2
     - operation: subtract
       name: keys
+
+
         
 
 pcbs:
