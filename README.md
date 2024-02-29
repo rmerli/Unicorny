@@ -1,7 +1,7 @@
 # Unicorny
 It is a unibody ergonomic keyboard inspired by the ferris-sweep (34 keys).
 The aim of this keyboard is to have a layout as close as possbile to the ferris-sweep but in a unibody frame, 
-to improve connection stability and because I found it easiear to carry around.
+to improve connection stability and because I found it easier to carry around.
 
 ## Features
 - Wired/wireless
